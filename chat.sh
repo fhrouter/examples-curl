@@ -1,6 +1,5 @@
 #!/bin/sh
-# Chat completion with a free frontier model on FHRouter
-curl https://fhrouter.com/v1/chat/completions \
-  -H "Authorization: Bearer $FHROUTER_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"grok-4.6","messages":[{"role":"user","content":"Hello"}]}'
+set -eu
+: "${FHROUTER_API_KEY:?Set FHROUTER_API_KEY}"
+: "${FHROUTER_MODEL:?Choose FHROUTER_MODEL from the pricing catalog}"
+jq -n --arg model "$FHROUTER_MODEL" '{model: $model, messages: [{role: "user", content: "Hello"}]}' |   curl --fail-with-body https://fhrouter.com/v1/chat/completions     -H "Authorization: Bearer $FHROUTER_API_KEY"     -H "Content-Type: application/json"     --data-binary @-
